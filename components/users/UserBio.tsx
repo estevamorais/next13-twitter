@@ -2,11 +2,12 @@ import React, { useMemo } from 'react'
 import { format } from 'date-fns'
 import { BiCalendar } from 'react-icons/bi'
 
-import Button from '../Button'
-
-import useCurrentUser from '@/hooks/useCurrentUser'
 import useUser from '@/hooks/useUser'
+import useFollow from '@/hooks/useFollow'
 import useEditModal from '@/hooks/useEditModal'
+import useCurrentUser from '@/hooks/useCurrentUser'
+
+import Button from '../Button'
 
 interface UserBioPrps {
   userId: string
@@ -17,6 +18,8 @@ const UserBio: React.FC<UserBioPrps> = ({ userId }) => {
   const { data: fetchedUser } = useUser(userId)
 
   const editModal = useEditModal()
+
+  const { isFollowing, toggleFollow } = useFollow(userId)
 
   const createdAt = useMemo(() => {
     if (!fetchedUser?.createdAt) {
@@ -32,7 +35,12 @@ const UserBio: React.FC<UserBioPrps> = ({ userId }) => {
         {currentUser?.id === userId ? (
           <Button secondary label="Edit" onClick={editModal.onOpen} />
         ) : (
-          <Button secondary label="Follow" onClick={() => { }} />
+          <Button
+            onClick={toggleFollow}
+            label={isFollowing ? 'Unfollow' : 'Follow'}
+            secondary={!isFollowing}
+            outline={isFollowing}
+          />
         )}
       </div>
       <div className="mt-8 px-4 ">
